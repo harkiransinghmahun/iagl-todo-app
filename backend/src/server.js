@@ -59,7 +59,6 @@ const server = () => {
         res.status(201).json(newTodo);
     });
 
-
   return server;
 };
 module.exports = server;
