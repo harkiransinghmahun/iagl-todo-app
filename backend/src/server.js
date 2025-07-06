@@ -51,7 +51,7 @@ const server = () => {
         }
 
         try {
-            const newTodo = todoService.createNewTodo(title, description);
+            const newTodo = await todoService.createNewTodo(title, description);
 
             if (newTodo) {
                 return res.status(201).json(newTodo);
@@ -60,6 +60,25 @@ const server = () => {
             }
         } catch (error) {
             console.error("Error creating a new todo: ", error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+
+    /**
+     DELETE /api/todos
+     */
+    server.delete('/api/todos/:id', async (req, res) => {
+        const id = Number(req.params.id);
+
+        try {
+            const deleteTodo = await todoService.deleteTodoById(id);
+            if (deleteTodo) {
+                res.json(deleteTodo);
+            } else {
+                res.status(404).json({error: `Cannot delete. Todo with id [${id}] not found`})
+            }
+        } catch (error) {
+            console.error("Error deleting todo from repository: ", error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     });

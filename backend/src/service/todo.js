@@ -19,17 +19,18 @@ const todoService = (repository) => {
         isCompleted: false
       }
       return await repository.createNewTodo(newTodo);
+    },
+
+    deleteTodoById: async (id) => {
+      return await repository.deleteTodoById(id);
     }
-
-
-
 
   };
 };
 
 function idGenerator(allTodos) {
-  if (allTodos.todos.length === 0) return 1;
-  const maxId = Math.max(...allTodos.todos.map(todo => todo.id));
+  if (allTodos.length === 0) return 1;
+  const maxId = Math.max(...allTodos.map(todo => todo.id));
   return maxId + 1;
 }
 

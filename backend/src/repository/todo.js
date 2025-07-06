@@ -30,6 +30,18 @@ module.exports = {
     const sizeAfterInsertion = todoList.todos.length;
 
     return (sizeAfterInsertion - sizeBeforeInsertion === 1) ? Promise.resolve(todo) : null;
+  },
+
+  deleteTodoById: (id) => {
+    const index = todoList.todos.findIndex(todo => todo.id === id);
+
+    if (index === -1) {
+      return Promise.resolve(null);
+    }
+
+    const deletedTodo = todoList.todos[index];
+    todoList.todos.splice(index, 1);
+    return Promise.resolve(deletedTodo);
   }
 
 };
