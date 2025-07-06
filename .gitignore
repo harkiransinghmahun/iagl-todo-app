@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+
+# IDE
+.idea/
+
+# Build directory
+dist/
+build/
+
+# Dependency directories
+backend/node_modules/
+node_modules/
