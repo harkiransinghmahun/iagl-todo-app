@@ -32,6 +32,16 @@ module.exports = {
     return (sizeAfterInsertion - sizeBeforeInsertion === 1) ? Promise.resolve(todo) : null;
   },
 
+  markComplete: (id) => {
+    const todo = todoList.todos.find(todo => todo.id === id);
+    if (todo) {
+      todo.isCompleted = true;
+      return Promise.resolve(true);
+    } else {
+      return Promise.resolve(false);
+    }
+  },
+
   deleteTodoById: (id) => {
     const index = todoList.todos.findIndex(todo => todo.id === id);
 

@@ -21,6 +21,10 @@ const todoService = (repository) => {
       return await repository.createNewTodo(newTodo);
     },
 
+    markComplete: async (id) => {
+      return await repository.markComplete(id);
+    },
+
     deleteTodoById: async (id) => {
       return await repository.deleteTodoById(id);
     }

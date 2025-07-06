@@ -65,6 +65,31 @@ const server = () => {
     });
 
     /**
+     PUT mark completed /api/todos/:id
+     */
+    server.put('/api/todos/:id', async (req, res) => {
+        const id = Number(req.params.id);
+        const { isCompleted } = req.body;
+
+        if (!isCompleted) {
+            return res.status(400).json({ error: 'isCompleted is required to update a todo' });
+        }
+
+        try {
+            const markedComplete = await todoService.markComplete(id);
+
+            if (markedComplete) {
+                return res.status(200).json(true);
+            } else {
+                return res.status(404).json({ error: `Cannot mark complete. Todo with id ${id} not found` });
+            }
+        } catch (error) {
+            console.error(`Error marking todo with id ${id}:`, error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+
+    /**
      DELETE /api/todos
      */
     server.delete('/api/todos/:id', async (req, res) => {
