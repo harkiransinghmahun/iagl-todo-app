@@ -29,7 +29,7 @@ module.exports = {
     todoList.todos.push(todo);
     const sizeAfterInsertion = todoList.todos.length;
 
-    return Promise.resolve(sizeAfterInsertion - sizeBeforeInsertion === 1);
+    return (sizeAfterInsertion - sizeBeforeInsertion === 1) ? Promise.resolve(todo) : null;
   }
 
 };

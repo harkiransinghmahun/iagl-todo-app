@@ -50,13 +50,18 @@ const server = () => {
             return res.status(400).json({ error: 'title and description of todo items are required' });
         }
 
-        const isSuccessful = todoService.createNewTodo(title, description);
+        try {
+            const newTodo = todoService.createNewTodo(title, description);
 
-        if (isSuccessful) {
-            return res.status(201).json(newTodo);
+            if (newTodo) {
+                return res.status(201).json(newTodo);
+            } else {
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+        } catch (error) {
+            console.error("Error creating a new todo: ", error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-
-        res.status(201).json(newTodo);
     });
 
   return server;
