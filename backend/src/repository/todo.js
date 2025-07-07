@@ -24,21 +24,18 @@ module.exports = {
     return Promise.resolve(todoFromRepo || null);
   },
 
-  createNewTodo: (todo) => {
-    const sizeBeforeInsertion = todoList.todos.length;
+  saveNewTodo: (todo) => {
     todoList.todos.push(todo);
-    const sizeAfterInsertion = todoList.todos.length;
-
-    return (sizeAfterInsertion - sizeBeforeInsertion === 1) ? Promise.resolve(todo) : null;
+    return Promise.resolve(todo);
   },
 
-  markComplete: (id) => {
+  updateStatus: (id, isCompleted) => {
     const todo = todoList.todos.find(todo => todo.id === id);
     if (todo) {
-      todo.isCompleted = true;
-      return Promise.resolve(true);
+      todo.isCompleted = isCompleted;
+      return Promise.resolve(todo);
     } else {
-      return Promise.resolve(false);
+      return Promise.reject(new Error(`Todo with ID ${id} not found`));
     }
   },
 

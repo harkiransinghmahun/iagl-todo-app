@@ -13,10 +13,10 @@ const server = () => {
     */
     server.get('/api/todos', async (req, res) => {
         try {
-            res.json(await todoService.getAllTodos());
+            const todos = await todoService.getAllTodos();
+            res.status(200).json(todos);
         } catch (error) {
-            console.error("Error fetching all todos from repository: ", error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(error.status).json({ error: error.externalMessage});
         }
     });
 
@@ -28,14 +28,9 @@ const server = () => {
 
         try {
             const todo = await todoService.getTodoById(id);
-            if (todo) {
-                res.json(todo);
-            } else {
-                res.status(404).json({error: `Requested todo with id [${id}] not found`})
-            }
+            res.status(200).json(todo);
         } catch (error) {
-            console.error("Error fetching todo from repository: ", error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(error.status).json({ error: error.externalMessage});
         }
     });
 
@@ -51,41 +46,29 @@ const server = () => {
         }
 
         try {
-            const newTodo = await todoService.createNewTodo(title, description);
-
-            if (newTodo) {
-                return res.status(201).json(newTodo);
-            } else {
-                return res.status(500).json({ error: 'Internal Server Error' });
-            }
+            const newTodo = await todoService.saveNewTodo(title, description);
+            return res.status(201).json(newTodo);
         } catch (error) {
-            console.error("Error creating a new todo: ", error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(error.status).json({ error: error.externalMessage});
         }
     });
 
     /**
-     PUT mark completed /api/todos/:id
+     PATCH update status /api/todos/:id
      */
-    server.put('/api/todos/:id', async (req, res) => {
+    server.patch('/api/todos/:id', async (req, res) => {
         const id = Number(req.params.id);
         const { isCompleted } = req.body;
 
-        if (!isCompleted) {
+        if (typeof isCompleted === 'undefined') {
             return res.status(400).json({ error: 'isCompleted is required to update a todo' });
         }
 
         try {
-            const markedComplete = await todoService.markComplete(id);
-
-            if (markedComplete) {
-                return res.status(200).json(true);
-            } else {
-                return res.status(404).json({ error: `Cannot mark complete. Todo with id ${id} not found` });
-            }
+            const updatedStatusTodo = await todoService.updateStatus(id, isCompleted);
+            return res.status(200).json(updatedStatusTodo);
         } catch (error) {
-            console.error(`Error marking todo with id ${id}:`, error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(error.status).json({ error: error.externalMessage});
         }
     });
 
@@ -97,14 +80,9 @@ const server = () => {
 
         try {
             const deleteTodo = await todoService.deleteTodoById(id);
-            if (deleteTodo) {
-                res.json(deleteTodo);
-            } else {
-                res.status(404).json({error: `Cannot delete. Todo with id [${id}] not found`})
-            }
+            return res.status(200).json(deleteTodo);
         } catch (error) {
-            console.error("Error deleting todo from repository: ", error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(error.status).json({ error: error.externalMessage});
         }
     });
 
